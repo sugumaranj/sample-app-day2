@@ -1,0 +1,14 @@
+{
+  "name": "vite-devops-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host --port 3000"
+  },
+  "dependencies": {
+    "vite": "^5.1.0"
+  }
+}

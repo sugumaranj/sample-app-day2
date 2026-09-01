@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # 1. Vite Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: devops-vite-frontend
+    ports:
+      - "3000:3000"
+    restart: always
+    networks:
+      - devops-net
+
+  # 2. Express Backend API Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: devops-express-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - devops-net
+
+  # 3. PostgreSQL Database Service
+  database:
+    image: postgres:15-alpine
+    container_name: devops-postgres-db
+    environment:
+      POSTGRES_USER: devops_user
+      POSTGRES_PASSWORD: devops_password
+      POSTGRES_DB: devops_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - devops-net
+
+  # 4. Jenkins CI/CD Controller Service (Runs Jenkins in Docker Compose)
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: devops-jenkins-server
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - devops-net
+
+networks:
+  devops-net:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  jenkins-data:
